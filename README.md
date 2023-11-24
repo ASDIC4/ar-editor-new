@@ -4,10 +4,15 @@
 
 #### 软件架构
 软件架构说明
+
 springboot mybatis 搭建服务端
+
 mysql数据库
+
 阿里云服务器
+
 vue 前端
+
 unity 客户端
 
 #### 安装教程
