@@ -93,7 +93,7 @@ export default {
           console.log(res.data);
           // 用户在登录成功后，需要将后端返回的token存储在localStorage中
           // 假设后端返回的token在res.data.token中
-          sessionStorage.setItem('token', res.data.token);
+          // sessionStorage.setItem('token', res.data.token);
           sessionStorage.setItem("user", JSON.stringify(res.data));
          
           this.$router.push("/");

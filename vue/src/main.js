@@ -9,7 +9,7 @@ import '@/assets/global.css'
 window.addEventListener('beforeunload', function (event) {
   // 清除存储的用户信息
   sessionStorage.removeItem('user');
-  sessionStorage.removeItem('token');
+  // sessionStorage.removeItem('token');
 });
 
 Vue.config.productionTip = false

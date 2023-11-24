@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+
+# ?????
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root   #这里需要修改 {}
+    password: root #?????????
+    url: jdbc:mysql://localhost:3306/springboot?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+    # 这里需求修改
+  main:
+    allow-circular-references: true
+
+# ??mybatis???xml??
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.entity
+  logging:
+    level:
+      com:
+        example:
+          dao=DEBUG:
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

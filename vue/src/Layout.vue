@@ -1,3 +1,4 @@
+<!-- writtern by 赵嘉诚 -->
 <template>
   <div id="layout">
     <el-container>
@@ -36,7 +37,7 @@
               margin-right: 15px;
               font-family: 'Arial', sans-serif;
             "
-            >{{ user.username }}<i class="el-icon-arrow-down el-icon--right"></i
+            >{{ user.userName }}<i class="el-icon-arrow-down el-icon--right"></i
           ></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
@@ -67,13 +68,13 @@
             <span slot="title">场景管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/other">
+          <!-- <el-menu-item index="/other">
             <i class="el-icon-setting"></i>
             <span slot="title">其他</span>
-          </el-menu-item>
+          </el-menu-item> -->
         </el-menu>
       </el-aside>
-      <el-main style="background-color: #ffffff">
+      <el-main style="background-color: #ffffff; overflow-y: scroll; height: 100vh;">
         <router-view />
       </el-main>
     </el-container>
@@ -113,7 +114,7 @@ export default {
     },
     logout() {
       sessionStorage.removeItem("user");
-      sessionStorage.removeItem("token")
+      // sessionStorage.removeItem("token")
       if (this.$route.path !== "/login") {
         this.$router.push("/login"); // 只有在当前路由不是 "/" 时才进行导航
       }

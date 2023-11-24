@@ -1,3 +1,4 @@
+<!-- writtern by 赵嘉诚 -->
 <template>
   <div class="asset">
     <div>
@@ -31,7 +32,7 @@
         @input="handleSearch()"
       ></el-input>
 
-      <el-button @click="reset()">清空</el-button>
+      <el-button @click="reset()">刷新</el-button>
       <el-button type="primary" @click="uploadDialogVisible = true">
         上传</el-button
       >
@@ -51,7 +52,7 @@
           <el-form-item label="上传文件" :label-width="formLabelWidth">
             <el-upload
               class="upload-demo"
-              action="http://localhost:8080/api/asset/upload"
+              :action="getUploadUrl()"
               :on-success="successUpload"
             >
               <el-button type="primary" size="small">点击上传</el-button>
@@ -59,8 +60,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="uploadDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submit()">确 定</el-button>
+          <el-button @click="cancelUpload()">取 消</el-button>
+          <el-button type="primary" @click="confirmUpload()">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -73,8 +74,23 @@
       <!-- <img :src="scope.row.thumbPath" alt="照片" />
         </template>
       </el-table-column> -->
-      <el-table-column prop="thumbnailUrl" label="缩略图" width="180">
+      
+      <el-table-column prop="assetPath" label="缩略图" width="180">
+        <!-- <el-image
+          style="width: 70px; height: 70px; border-radius: 50%"
+          :src= "scope.row.assetPath"
+          :preview-src-list= "scope.row.assetPath">
+        </el-image> -->
+        <template slot-scope="scope">
+            <el-image
+            style="width: 70px; height: 70px; border-radius: 50%"
+            :src="getThumbnailUrl(scope.row.assetPath)"
+            :preview-src-list="[getThumbnailUrl(scope.row.assetPath)]"
+            @error="handleImageError"
+          ></el-image>
+        </template>
       </el-table-column>
+    
       <el-table-column prop="assetName" label="素材名" width="180">
       </el-table-column>
       <el-table-column prop="assetId" label="素材ID"> </el-table-column>
@@ -136,37 +152,12 @@
 </template>
 
 
-
-<!--</template>-->
-<!--<script>-->
-<!--  export default {-->
-<!--    methods: {-->
-<!--      handleSizeChange(val) {-->
-<!--        console.log(`每页 ${val} 条`);-->
-<!--      },-->
-<!--      handleCurrentChange(val) {-->
-<!--        console.log(`当前页: ${val}`);-->
-<!--      }-->
-<!--    },-->
-<!--    data() {-->
-<!--      return {-->
-<!--        currentPage1: 5,-->
-<!--        currentPage2: 5,-->
-<!--        currentPage3: 5,-->
-<!--        currentPage4: 4-->
-<!--      };-->
-<!--    }-->
-<!--  }-->
-<!--</script>-->
-
-
 <script>
 import request from "@/utils/request";
 
 export default {
   data() {
     return {
-      
       params: {
         assetName: "",
         assetId: "",
@@ -181,8 +172,9 @@ export default {
       uploadDialogVisible: false,
       form: {
         assetName: "",
+        assetId: "",
         assetType: "",
-        files:[],
+        assetPath: "",
       },
       formLabelWidth: "100px",
       fileList: [
@@ -201,6 +193,7 @@ export default {
       deleteTarget: [], // 保存用户点击删除时的目标数据
       editTarget: [],
       editAssetNewName: "",
+      nowFileStoragePath: "",
     };
   },
   created() {
@@ -283,7 +276,8 @@ export default {
     // },
     successUpload(res){
       console.log("看看四件戳res");
-      console.log(res);
+      this.nowFileStoragePath = res.data;
+      console.log(this.nowFileStoragePath);
     },
     handleExceed(files, fileList) {
       this.$message.warning(
@@ -295,11 +289,26 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    submit() {
-      request.post("assets", this.form).then((res) => {
+    confirmUpload(){
+      this.uploadDialogVisible = false;
+
+      request.post("/asset/confirmUpload/"+this.form.assetName +"/"+this.form.assetType+"/" + this.params.userId+ "/"+ this.nowFileStoragePath).then((res) => {
         if (res.code === "0") {
           this.$message({
-            message: "成功上传",
+          message: "成功上传",
+          type: "success",
+          });
+        } else {
+          }
+      });
+      this.handleSearch();
+    },
+    cancelUpload(){
+        this.uploadDialogVisible = false;
+        request.delete("/asset/cancelUpload/"+this.nowFileStoragePath).then((res) => {
+        if (res.code === "0") {
+          this.$message({
+            message: "成功取消上传",
             type: "success",
           });
         } else {
@@ -368,7 +377,7 @@ export default {
       // 执行实际的删除操作，可以调用 API 或其他方法
       // ...
       if(this.deleteTarget != []){
-        request.delete("/asset/" + this.deleteTarget.assetId).then(res => {
+        request.delete("/asset/delete/" + this.deleteTarget.assetId).then(res => {
           if (res.code === '0') {
             this.$message({
               message: '删除成功',
@@ -393,6 +402,17 @@ export default {
       // 在对话框关闭时清空 deleteTarget
       this.deleteTarget = [];
     },
+    getThumbnailUrl(assetPath) {
+      return `http://47.93.242.88:8080/api/asset/${assetPath}`;
+    },
+    handleImageError(event) {
+      // This method is called when the image fails to load
+      // You can update the source to a fallback image here
+      event.target.src = 'http://47.93.242.88:8080/api/asset/error.jpg';
+    },
+    getUploadUrl(){
+      return `http://47.93.242.88:8080/api/asset/upload`
+    }
   },
 };
 </script>

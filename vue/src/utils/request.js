@@ -1,8 +1,9 @@
+// writter by 赵嘉诚
 import axios from 'axios'
 
 // 创建一个axios对象出来
 const request = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: 'http://47.93.242.88:8080',
     timeout: 5000
 })
 
@@ -13,9 +14,9 @@ request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
 
     const user = sessionStorage.getItem("user");
-    if (user) {
-        config.headers['token'] = JSON.parse(user).token;
-    }
+    // if (user) {
+    //     config.headers['token'] = JSON.parse(user).token;
+    // }
     // config.headers['token'] = user.token;  // 设置请求头
     return config
 }, error => {
@@ -28,6 +29,8 @@ request.interceptors.response.use(
     response => {
         // response.data即为后端返回的Result
         let res = response.data;
+        console.log("看json parse error")
+        console.log(res);
         // 兼容服务端返回的字符串数据
         if (typeof res === 'string') {
             res = res ? JSON.parse(res) : res
