@@ -3,17 +3,12 @@
 #### 介绍
 
 #### 软件架构
-软件架构说明
-
-springboot mybatis 搭建服务端
-
-mysql数据库
-
-阿里云服务器
-
-vue 前端
-
-unity 客户端
+1. springboot mybatis 搭建服务端
+2. mysql数据库
+3. vue 前端
+4. 阿里云服务器
+5. vue 前端
+6. unity 客户端
 
 #### 安装教程
 
